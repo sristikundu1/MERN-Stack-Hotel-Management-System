@@ -1,11 +1,12 @@
+import Rooms from "../../components/Rooms/Rooms";
 
 
 const Home = () => {
     return (
         <div>
-            <h2>Welcome to homepage</h2>
             {/* category section  */}
             {/* rooms section  */}
+            <Rooms></Rooms>
         </div>
     );
 };

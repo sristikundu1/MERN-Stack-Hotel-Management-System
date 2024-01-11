@@ -14,7 +14,7 @@ const MenuDropdown = () => {
                         Host your home
                     </button>
                 </div>
-                
+
                 {/* Dropdown btn */}
                 <div
                     onClick={() => setIsOpen(!isOpen)}
@@ -22,7 +22,9 @@ const MenuDropdown = () => {
                     <AiOutlineMenu></AiOutlineMenu>
                     <div className='hidden md:block'>
                         {/* Avatar */}
-                        <img src={profileimg}
+                        <img
+                            className='rounded-full'
+                            src={profileimg}
                             alt="profile"
                             height='30'
                             width='30' />
