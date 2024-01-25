@@ -1,28 +1,35 @@
 import { Link } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc'
+import { imageUpload } from "../../api/utils";
+import useAuth from "../../hooks/useAuth";
 
 const SignUp = () => {
-    const handleSubmit = async event => {
-        event.preventDefault();
+const { createUser,updateUserProfile,signInWithGoogle } = useAuth()
+  // form submit handeler 
+  const handleSubmit = async event => {
+    event.preventDefault();
 
-        const form = event.target
-        const name = form.name.value
-        const email = form.email.value
-        const password = form.password.value
-        const image = form.image.files[0]
+    const form = event.target
+    const name = form.name.value
+    const email = form.email.value
+    const password = form.password.value
+    const image = form.image.files[0]
 
-        console.log({name,email,password})
-        console.log(image)
-    }
-    return (
-        <div className='flex justify-center items-center min-h-screen'>
+    const imageData = await imageUpload(image);
+    console.log(imageData);
+
+        console.log({ name, email, password })
+
+  }
+  return (
+    <div className='flex justify-center items-center min-h-screen'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
         <div className='mb-8 text-center'>
           <h1 className='my-3 text-4xl font-bold'>Sign Up</h1>
           <p className='text-sm text-gray-400'>Welcome to StayVista</p>
         </div>
         <form
-        onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           noValidate=''
           action=''
           className='space-y-6 ng-untouched ng-pristine ng-valid'
@@ -118,7 +125,7 @@ const SignUp = () => {
         </p>
       </div>
     </div>
-    );
+  );
 };
 
 export default SignUp;
