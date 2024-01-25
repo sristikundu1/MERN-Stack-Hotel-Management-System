@@ -1,9 +1,15 @@
 import { formatDistance } from "date-fns";
 import Button from "../Button/Button";
 import Calender from "./Calender";
+import { useState } from "react";
 
 
 const RoomReserVation = ({ room }) => {
+    const [value, setValue] = useState({
+        startDate: new Date(room?.from),
+        endDate: new Date(room?.to),
+        key:'selection'
+    })
     // price calculation  
     // const totalDays = parseInt(formatDistance(new Date(room?.to), new Date(room?.from)).split('')[0])
     
@@ -20,7 +26,7 @@ const RoomReserVation = ({ room }) => {
             </div>
             <hr />
             <div className="flex justify-center">
-                <Calender></Calender>
+                <Calender value={value}></Calender>
             </div>
             <hr />
             <div className="p-4">
