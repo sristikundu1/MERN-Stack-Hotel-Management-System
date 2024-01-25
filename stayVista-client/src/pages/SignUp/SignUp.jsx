@@ -4,7 +4,7 @@ import { imageUpload } from "../../api/utils";
 import useAuth from "../../hooks/useAuth";
 
 const SignUp = () => {
-const { createUser,updateUserProfile,signInWithGoogle } = useAuth()
+  const { createUser, updateUserProfile, signInWithGoogle } = useAuth()
   // form submit handeler 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -15,10 +15,24 @@ const { createUser,updateUserProfile,signInWithGoogle } = useAuth()
     const password = form.password.value
     const image = form.image.files[0]
 
-    const imageData = await imageUpload(image);
-    console.log(imageData);
 
-        console.log({ name, email, password })
+    try {
+      // upload image
+      const imageData = await imageUpload(image);
+
+      // user registration
+      const result = await createUser(email, password)
+
+      // save username and profile photo 
+      await updateUserProfile(name, imageData?.data?.display_url)
+      console.log(result);
+
+      // save user data in database
+      
+
+    } catch (err) {
+      console.log(err);
+    }
 
   }
   return (
