@@ -2,8 +2,10 @@ import { useState } from "react";
 import { AiOutlineMenu } from 'react-icons/ai'
 import { Link } from "react-router-dom";
 import profileimg from "../../../assets/images/placeholder.jpg"
+import useAuth from "../../../hooks/useAuth";
 const MenuDropdown = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { user } = useAuth()
     return (
         <div className='relative'>
             <div className='flex flex-row items-center gap-3'>
@@ -24,7 +26,7 @@ const MenuDropdown = () => {
                         {/* Avatar */}
                         <img
                             className='rounded-full'
-                            src={profileimg}
+                            src={user && user.photoURL ? user.photoURL : profileimg}
                             alt="profile"
                             height='30'
                             width='30' />

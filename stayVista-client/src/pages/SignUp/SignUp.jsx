@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc'
 import { imageUpload } from "../../api/utils";
 import useAuth from "../../hooks/useAuth";
+import { getToken, saveUser } from "../../api/auth";
+import toast from "react-hot-toast";
+import { TbFidgetSpinner } from "react-icons/tb";
 
 const SignUp = () => {
-  const { createUser, updateUserProfile, signInWithGoogle } = useAuth()
+  const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
+  const navigate = useNavigate()
   // form submit handeler 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -28,10 +32,18 @@ const SignUp = () => {
       console.log(result);
 
       // save user data in database
+      const dbResponse = await saveUser(result?.user)
+      console.log(dbResponse);
       
+      // get token 
+
+      await getToken(result?.user?.email)
+      navigate("/")
+      toast.success("Signup successfull")
 
     } catch (err) {
       console.log(err);
+      toast.error(err?.message)
     }
 
   }
@@ -111,7 +123,8 @@ const SignUp = () => {
               type='submit'
               className='bg-rose-500 w-full rounded-md py-3 text-white'
             >
-              Continue
+              { loading ? <TbFidgetSpinner className="animate-spin m-auto"></TbFidgetSpinner> : 'Continue'}
+              
             </button>
           </div>
         </form>
