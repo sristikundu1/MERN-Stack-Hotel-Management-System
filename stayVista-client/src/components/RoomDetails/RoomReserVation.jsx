@@ -11,12 +11,12 @@ const RoomReserVation = ({ room }) => {
         key:'selection'
     })
     // price calculation  
-    // const totalDays = parseInt(formatDistance(new Date(room?.to), new Date(room?.from)).split('')[0])
+    const totalDays = parseInt(formatDistance(new Date(room?.to), new Date(room?.from)).split('')[0])
     
     
     // total price calculation 
-    // const totalPrice = totalDays * room?.price
-    // console.log(totalPrice)
+    const totalPrice = totalDays * room?.price
+    console.log(totalPrice)
 
     return (
         <div className="rounded-xl border-[1px] border-neutral-200 overflow-hidden bg-white">
@@ -35,7 +35,7 @@ const RoomReserVation = ({ room }) => {
             <hr />
             <div className="p-4 font-semibold text-lg flex justify-between items-center">
                 <div>Total</div>
-                <div>$ {room?.price}</div>
+                <div>$ {totalPrice}</div>
             </div>
 
         </div>
