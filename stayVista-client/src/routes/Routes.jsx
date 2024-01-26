@@ -7,6 +7,7 @@ import SignUp from "../pages/SignUp/SignUp";
 import RoomDetails from "../pages/RoomDetails/RoomDetails";
 import PrivateRoute from "./PrivateRoute";
 import { getRoom } from "../api/rooms";
+import DashBoardLayout from "../layouts/DashBoardLayout";
 
 
 const routes = createBrowserRouter([
@@ -35,6 +36,15 @@ const routes = createBrowserRouter([
     {
         path:"/signup",
         element:<SignUp></SignUp>
+    },
+    {
+        path:"/dashboard",
+        element:<DashBoardLayout></DashBoardLayout>,
+        children:[
+            {
+                
+            }
+        ]
     }
 ])
 
