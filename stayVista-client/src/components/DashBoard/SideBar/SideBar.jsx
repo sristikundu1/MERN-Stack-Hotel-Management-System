@@ -73,7 +73,7 @@ const SideBar = () => {
                             <ManuItem
                                 icon={MdMapsHomeWork}
                                 label='My Listings'
-                                address='mylistings'></ManuItem>
+                                address='my-listings'></ManuItem>
 
                             <ManuItem
                                 icon={MdMapsHomeWork}

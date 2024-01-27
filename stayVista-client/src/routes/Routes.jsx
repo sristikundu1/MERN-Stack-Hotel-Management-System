@@ -48,7 +48,7 @@ const routes = createBrowserRouter([
                 element:<AddRoom></AddRoom>
             },
             {
-                path:"mylistings",
+                path:"my-listings",
                 element:<MyListings></MyListings>
             }
         ]
