@@ -2,6 +2,7 @@ import { DateRange } from 'react-date-range'
 import { TbFidgetSpinner } from 'react-icons/tb'
 import { CategoriesData } from '../Rooms/Categories/CategoriesData'
 
+
 const AddRoomForm = ({
     handleSubmit,
     dates,
@@ -50,11 +51,11 @@ const AddRoomForm = ({
                             <label htmlFor='location' className='block text-gray-600'>
                                 Select Availability Range
                             </label>
-                            <DateRange 
-                            rangeColors={ ['#F43F5E'] } 
-                            onChange={handleDates} 
-                            ranges={[dates]}
-                            minDate={new Date()}/>
+                            <DateRange
+                                rangeColors={['#F43F5E']}
+                                ranges={[dates]}
+                                onChange={handleDates}
+                                minDate={new Date()}></DateRange>
                         </div>
                     </div>
                     <div className='space-y-6'>
@@ -77,6 +78,7 @@ const AddRoomForm = ({
                                 <div className='flex flex-col w-max mx-auto text-center'>
                                     <label>
                                         <input
+                                        onChange={e => handleImageChange(e.target.files[0])}
                                             className='text-sm cursor-pointer w-36 hidden'
                                             type='file'
                                             name='image'
@@ -85,7 +87,7 @@ const AddRoomForm = ({
                                             hidden
                                         />
                                         <div className='bg-rose-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-rose-500'>
-                                            Upload Image
+                                           {uploadButtonText}
                                         </div>
                                     </label>
                                 </div>
