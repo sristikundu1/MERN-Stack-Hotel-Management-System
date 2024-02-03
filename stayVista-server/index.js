@@ -97,6 +97,13 @@ async function run() {
       res.send(result)
     })
 
+    // get role of a user 
+    app.get('/user/:email', async(req,res) => {
+      const email = req.params.email;
+      const result = await usersCollection.findOne({email})
+      res.send(result);
+    })
+
     // to get all rooms data 
     app.get('/rooms', async (req,res) => {
         const result = await roomsCollection.find().toArray()
@@ -108,6 +115,13 @@ async function run() {
         const id = req.params.id
         const result = await roomsCollection.findOne({_id: new ObjectId(id)})
         res.send(result);
+    })
+
+    // get all rooms of a host
+    app.get("/rooms/:email", async (req,res) => {
+      const email = req.params.email;
+      const result = await roomsCollection.find({'host.email':email}).toArray();
+      res.send(result);
     })
 
     // post a room in database

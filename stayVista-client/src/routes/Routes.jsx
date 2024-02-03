@@ -41,15 +41,15 @@ const routes = createBrowserRouter([
     },
     {
         path:"/dashboard",
-        element:<DashBoardLayout></DashBoardLayout>,
+        element:<PrivateRoute><DashBoardLayout></DashBoardLayout></PrivateRoute>,
         children:[
             {
                 path:"add-room",
-                element:<AddRoom></AddRoom>
+                element:<PrivateRoute><AddRoom></AddRoom></PrivateRoute>
             },
             {
                 path:"my-listings",
-                element:<MyListings></MyListings>
+                element:<PrivateRoute><MyListings></MyListings></PrivateRoute>
             }
         ]
     }

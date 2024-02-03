@@ -3,19 +3,24 @@ import { useState } from 'react'
 import Logo from '../../Shared/Logo'
 import ManuItem from './ManuItem'
 import ToggleBtn from '../../Button/ToggleBtn'
-// import ToggleBtn from '../../Button/ToggleBtn'
 // Icons
 import { GrLogout } from 'react-icons/gr'
 import { FcSettings } from 'react-icons/fc'
 import { AiOutlineBars } from 'react-icons/ai'
 import { BsGraphUp } from 'react-icons/bs'
-import { BsHouseAddFill } from "react-icons/bs";
-import { MdMapsHomeWork } from "react-icons/md";
+import useAuth from '../../../hooks/useAuth'
+import useRole from '../../../hooks/useRole'
+import HostMenu from './HostMenu'
+import GuestMenu from './GuestMenu'
+import AdminMenu from './AdminMenu'
 
 
 const SideBar = () => {
+    const { logOut } = useAuth()
     const [toggle, setToggle] = useState(false)
     const [isActive, setActive] = useState(false)
+    const [role] = useRole();
+
 
     //   For guest/host menu item toggle button
     const toggleHandler = event => {
@@ -57,30 +62,18 @@ const SideBar = () => {
                     {/* Nav Items */}
                     <div className='flex flex-col justify-between flex-1 mt-6'>
                         {/* If a user is host */}
-                        <ToggleBtn toggleHandler={toggleHandler} />
+                       {role === 'host' &&  <ToggleBtn toggleHandler={toggleHandler} />}
                         <nav>
                             <ManuItem
                                 icon={BsGraphUp}
                                 label='Statistics'
                                 address='/dashboard'></ManuItem>
 
-                            {/* Menu Items */}
-                            <ManuItem
-                                icon={BsHouseAddFill}
-                                label='Add Room'
-                                address='add-room'></ManuItem>
-
-                            <ManuItem
-                                icon={MdMapsHomeWork}
-                                label='My Listings'
-                                address='my-listings'></ManuItem>
-
-                            <ManuItem
-                                icon={MdMapsHomeWork}
-                                label='Manage Bookings'
-                                address='/mylistings'></ManuItem>
-
-
+                            {/*Host Menu Items */}
+                            { role === 'guest' && <GuestMenu></GuestMenu>}
+                            { role === 'host' ? toggle? <HostMenu></HostMenu> : <GuestMenu></GuestMenu> : ''}
+                            { role === 'admin' && <AdminMenu></AdminMenu>}
+                           
                         </nav>
                     </div>
                 </div>
@@ -92,7 +85,9 @@ const SideBar = () => {
                         label='Profile'
                         address='/dashboard/profile'></ManuItem>
 
-                    <button className='flex w-full items-center px-4 py-2 mt-5 text-gray-600 hover:bg-gray-300   hover:text-gray-700 transition-colors duration-300 transform'>
+                    <button
+                        onClick={logOut}
+                        className='flex w-full items-center px-4 py-2 mt-5 text-gray-600 hover:bg-gray-300   hover:text-gray-700 transition-colors duration-300 transform'>
                         <GrLogout className='w-5 h-5' />
 
                         <span className='mx-4 font-medium'>Logout</span>
