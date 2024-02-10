@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const jwt = require('jsonwebtoken')
 const morgan = require('morgan')
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const port = process.env.PORT || 5000
 
 // middleware
@@ -46,6 +47,7 @@ async function run() {
   try {
     const usersCollection = client.db('stayVistaDb').collection("users");
     const roomsCollection = client.db('stayVistaDb').collection("rooms");
+    const bookingsCollection = client.db('stayVistaDb').collection("bookings");
     // auth related api
     app.post('/jwt', async (req, res) => {
       const user = req.body
@@ -98,37 +100,92 @@ async function run() {
     })
 
     // get role of a user 
-    app.get('/user/:email', async(req,res) => {
+    app.get('/user/:email', async (req, res) => {
       const email = req.params.email;
-      const result = await usersCollection.findOne({email})
+      const result = await usersCollection.findOne({ email })
       res.send(result);
     })
 
     // to get all rooms data 
-    app.get('/rooms', async (req,res) => {
-        const result = await roomsCollection.find().toArray()
-        res.send(result);
+    app.get('/rooms', async (req, res) => {
+      const result = await roomsCollection.find().toArray()
+      res.send(result);
     })
 
     // get one single room 
-    app.get('/room/:id', async (req, res) =>{
-        const id = req.params.id
-        const result = await roomsCollection.findOne({_id: new ObjectId(id)})
-        res.send(result);
+    app.get('/room/:id', async (req, res) => {
+      const id = req.params.id
+      const result = await roomsCollection.findOne({ _id: new ObjectId(id) })
+      res.send(result);
     })
 
     // get all rooms of a host
-    app.get("/rooms/:email", async (req,res) => {
+    app.get("/rooms/:email", async (req, res) => {
       const email = req.params.email;
-      const result = await roomsCollection.find({'host.email':email}).toArray();
+      const result = await roomsCollection.find({ 'host.email': email }).toArray();
       res.send(result);
     })
 
     // post a room in database
-    app.post("/rooms", verifyToken, async( req,res) =>{
+    app.post("/rooms", verifyToken, async (req, res) => {
       const room = req.body;
       const result = await roomsCollection.insertOne(room);
       res.send(result);
+    })
+
+    // generate client secret for stripe payment 
+    app.post("/create-payment-intent", verifyToken, async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100)
+      if (!price || amount < 1) return
+
+      const { client_secret } = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card'],
+      })
+      res.send({ clientSecret: client_secret })
+    })
+
+    // send bookings info in bookings collection
+    app.post('/bookings',verifyToken, async(req,res) => {
+      const booking = req.body;
+      const result = await bookingsCollection.insertOne(booking)
+      // send email.... 
+      res.send(result);
+    })
+
+    // change room status 
+    app.patch('/rooms/status/:id',async(req,res) =>{
+      const id = req.params.id;
+      const status = req.body.status;
+      const query = {_id: new ObjectId(id)}
+
+      const updateDoc = {
+        $set: {
+          booked: status,
+        },
+      }
+      const result = await roomsCollection.updateOne(query,updateDoc)
+      res.send(result);
+    })
+
+    // get all bookings for guest
+    app.get("/bookings", verifyToken, async(req,res) => {
+      const email = req.query.email;
+      if(!email) return res.send([]);
+      const query = {'guest.email': email}
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    // get all bookings for host
+    app.get("/bookings/host", verifyToken, async(req,res) => {
+      const email = req.query.email;
+      if(!email) return res.send([]);
+      const query = {host: email}
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection

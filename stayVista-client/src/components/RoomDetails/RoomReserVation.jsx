@@ -2,9 +2,17 @@ import { formatDistance } from "date-fns";
 import Button from "../Button/Button";
 import Calender from "./Calender";
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import BookingModal from "../Modal/BookingModal";
 
 
 const RoomReserVation = ({ room }) => {
+    let [isOpen, setIsOpen] = useState(false)
+    const { user } = useAuth()
+
+    const closeModal = () => {
+        setIsOpen(false)
+    }
     const [value, setValue] = useState({
         startDate: new Date(room?.from),
         endDate: new Date(room?.to),
@@ -16,7 +24,23 @@ const RoomReserVation = ({ room }) => {
     
     // total price calculation 
     const totalPrice = totalDays * room?.price
-    console.log(totalPrice)
+    // console.log(totalPrice)
+
+    const [bookingInfo,setBookingInfo] = useState({
+        guest: {
+            name: user?.displayName,
+            email: user?.email,
+            image: user?.photoURL
+        },
+        host: room?.host?.email,
+        location: room?.location,
+        price: totalPrice,
+        to: value.endDate,
+        from: value.startDate,
+        title: room?.title,
+        roomId: room?._id,
+        image: room?.image
+    })
 
     return (
         <div className="rounded-xl border-[1px] border-neutral-200 overflow-hidden bg-white">
@@ -30,13 +54,20 @@ const RoomReserVation = ({ room }) => {
             </div>
             <hr />
             <div className="p-4">
-                <Button label={'Reserve'}></Button>
+                <Button
+                disabled={room.host.email === user.email || room.booked}
+                onClick={() => setIsOpen(true)} label={'Reserve'}></Button>
             </div>
             <hr />
             <div className="p-4 font-semibold text-lg flex justify-between items-center">
                 <div>Total</div>
                 <div>$ {totalPrice}</div>
             </div>
+
+            <BookingModal 
+            closeModal={closeModal} 
+            isOpen={isOpen}
+            bookingInfo={bookingInfo}></BookingModal>
 
         </div>
     );

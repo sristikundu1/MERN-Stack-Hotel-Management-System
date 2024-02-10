@@ -15,13 +15,6 @@ const HostMenu = () => {
                 label='My Listings'
                 address='my-listings'></ManuItem>
 
-            <ManuItem
-                icon={MdMapsHomeWork}
-                label='Manage Bookings'
-                address='/mylistings'></ManuItem>
-
-
-
         </>
     );
 };
